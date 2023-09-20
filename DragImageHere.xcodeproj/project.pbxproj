@@ -20,6 +20,7 @@
 		061046512ABB5FE600AF1951 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		061046542ABB5FE600AF1951 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		061046562ABB5FE600AF1951 /* DragImageHere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DragImageHere.entitlements; sourceTree = "<group>"; };
+		0610465C2ABB7CA900AF1951 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +53,7 @@
 		0610464C2ABB5FE300AF1951 /* DragImageHere */ = {
 			isa = PBXGroup;
 			children = (
+				0610465C2ABB7CA900AF1951 /* Info.plist */,
 				0610464D2ABB5FE300AF1951 /* DragImageHereApp.swift */,
 				0610464F2ABB5FE300AF1951 /* ContentView.swift */,
 				061046512ABB5FE600AF1951 /* Assets.xcassets */,
@@ -271,9 +273,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DragImageHere/Preview Content\"";
 				DEVELOPMENT_TEAM = DRY6C57YN8;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DragImageHere/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -298,9 +302,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DragImageHere/Preview Content\"";
 				DEVELOPMENT_TEAM = DRY6C57YN8;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DragImageHere/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
