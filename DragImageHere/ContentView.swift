@@ -3,7 +3,27 @@ import UniformTypeIdentifiers
 
 let types: [UTType] = [.fileURL, .url]
 
-struct ContentView: View {
+struct ContentView: View, DropDelegate {
+  func performDrop(info: DropInfo) -> Bool {
+    if info.hasItemsConforming(to: types), let provider = info.itemProviders(for: types).first {
+      provider.loadObject(ofClass: NSURL.self) { object, error in
+        if let error = error {
+          print("Error loading dropped item: \(error.localizedDescription)")
+        } else if let url = object as? URL,
+                  let data = try? Data(contentsOf: url),
+                  let droppedImage = NSImage(data: data) {
+          DispatchQueue.main.async {
+            self.image = droppedImage
+          }
+        }
+      }
+      
+      return true
+    }
+    
+    return false
+  }
+  
   @State private var image: NSImage?
   
   var body: some View {
@@ -21,27 +41,7 @@ struct ContentView: View {
           .background(Color.gray.opacity(0.3))
       }
     }
-    .onDrop(of: types, isTargeted: nil, perform: performDrop)
-  }
-  
-  func performDrop(providers: [NSItemProvider]) -> Bool {
-    print("Drop detected")
-    
-    guard let provider = providers.first else { return false }
-    
-    provider.loadObject(ofClass: NSURL.self) { object, error in
-      if let error = error {
-        print("Error loading dropped item: \(error.localizedDescription)")
-      } else if let url = object as? URL,
-                let data = try? Data(contentsOf: url),
-                let droppedImage = NSImage(data: data) {
-        DispatchQueue.main.async {
-          self.image = droppedImage
-        }
-      }
-    }
-    
-    return true
+    .onDrop(of: types, delegate: self)
   }
 }
 
