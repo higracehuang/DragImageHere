@@ -4,7 +4,38 @@ import UniformTypeIdentifiers
 let types: [UTType] = [.fileURL, .url]
 
 struct ContentView: View, DropDelegate {
+  
   func performDrop(info: DropInfo) -> Bool {
+    
+    let pasteboard = NSPasteboard(name: .drag)
+    
+    guard let filePromises = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil) else { return false }
+    
+    guard let receiver = filePromises.first as? NSFilePromiseReceiver else { return false }
+
+    let queue = OperationQueue.main
+    
+    receiver.receivePromisedFiles(atDestination: URL.temporaryDirectory, operationQueue: queue) { (url, error) in
+      
+      if let error = error {
+        print(error)
+      } else if let data = try? Data(contentsOf: url),
+                let droppedImage = NSImage(data: data) {
+        
+        DispatchQueue.main.async {
+          self.image = droppedImage
+        }
+      
+        print(receiver.fileNames, receiver.fileTypes)
+      }
+       
+    }
+
+    
+    return true
+    
+  
+    /*
     if info.hasItemsConforming(to: types), let provider = info.itemProviders(for: types).first {
       provider.loadObject(ofClass: NSURL.self) { object, error in
         if let error = error {
@@ -22,6 +53,8 @@ struct ContentView: View, DropDelegate {
     }
     
     return false
+    */
+     
   }
   
   @State private var image: NSImage?
