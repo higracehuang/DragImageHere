@@ -1,54 +1,46 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-let types: [UTType] = [.fileURL, .url]
+let types: [UTType] = [.fileURL]
 
 struct ContentView: View, DropDelegate {
   
   func performDrop(info: DropInfo) -> Bool {
-    
-    if info.hasItemsConforming(to: types), let provider = info.itemProviders(for: types).first {
+    // Check if there are items conforming to the specified types
+    if let provider = info.itemProviders(for: types).first {
+      // Process the first item provider that conforms to the specified types
       provider.loadObject(ofClass: NSURL.self) { object, error in
         if let error = error {
           print("Error loading dropped item: \(error.localizedDescription)")
-        } else if let url = object as? URL,
-                  let data = try? Data(contentsOf: url),
-                  let droppedImage = NSImage(data: data) {
+        } else if let url = object as? URL, let data = try? Data(contentsOf: url), let droppedImage = NSImage(data: data) {
           DispatchQueue.main.async {
             self.image = droppedImage
           }
         }
       }
-      
       return true
     }
     
+    // If there are no items conforming to the specified types, check for file promise receivers in the pasteboard
     let pasteboard = NSPasteboard(name: .drag)
+    guard let filePromises = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil),
+          let receiver = filePromises.first as? NSFilePromiseReceiver else {
+      return false
+    }
     
-    guard let filePromises = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil) else { return false }
-    
-    guard let receiver = filePromises.first as? NSFilePromiseReceiver else { return false }
-    
-    let queue = OperationQueue.main
-    
+    // Process the first file promise receiver
+    let queue = OperationQueue()
     receiver.receivePromisedFiles(atDestination: URL.temporaryDirectory, operationQueue: queue) { (url, error) in
-      
       if let error = error {
-        print(error)
-      } else if let data = try? Data(contentsOf: url),
-                let droppedImage = NSImage(data: data) {
-        
+        print("Error loading dropped item from pasteboard: \(error.localizedDescription)")
+      } else if let data = try? Data(contentsOf: url), let droppedImage = NSImage(data: data) {
         DispatchQueue.main.async {
           self.image = droppedImage
         }
-        
-        print(receiver.fileNames, receiver.fileTypes)
       }
-      
     }
     
-    return false
-     
+    return true
   }
   
   @State private var image: NSImage?
